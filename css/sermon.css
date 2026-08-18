@@ -1,0 +1,417 @@
+/* ==========================================================================
+   SermonWriter — paleta café con blanco
+   Variables locales para no afectar otras páginas que usan css/global.css
+   ========================================================================== */
+.sermon-page {
+    --sw-coffee-900: #3E2723;
+    --sw-coffee-800: #4E342E;
+    --sw-coffee-700: #5D4037;
+    --sw-coffee-500: #8D6E63;
+    --sw-coffee-300: #D7CCC8;
+    --sw-coffee-100: #EFE6DE;
+    --sw-cream-50:  #FFFDF9;
+    --sw-cream-100: #FBF6EE;
+    --sw-cream-200: #F5EBDD;
+    --sw-gold:      #C9A15A;
+    --sw-gold-dark: #AD8641;
+    --sw-white:     #FFFFFF;
+    --sw-shadow: 0 2px 10px rgba(62, 39, 35, 0.08);
+    --sw-shadow-lg: 0 8px 24px rgba(62, 39, 35, 0.14);
+    background: linear-gradient(180deg, var(--sw-cream-100) 0%, var(--sw-cream-50) 260px);
+    min-height: 100vh;
+}
+
+/* ---------- Header ---------- */
+.sw-header {
+    background: linear-gradient(135deg, var(--sw-coffee-800), var(--sw-coffee-900));
+    color: var(--sw-cream-50);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    box-shadow: var(--sw-shadow);
+}
+
+.sw-header-left,
+.sw-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.sw-icon-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    color: var(--sw-cream-50);
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 999px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.sw-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateY(-1px);
+}
+
+.sw-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: Georgia, 'Times New Roman', serif;
+}
+
+.sw-brand-icon {
+    color: var(--sw-gold);
+    font-size: 1.1rem;
+}
+
+.sw-brand-name {
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.01em;
+}
+
+.sw-autosave {
+    font-size: 0.75rem;
+    color: var(--sw-coffee-300);
+    padding: 0.2rem 0.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.sw-autosave.is-saving {
+    color: var(--sw-gold);
+    border-color: var(--sw-gold);
+}
+
+.sw-btn-gold {
+    background: linear-gradient(135deg, var(--sw-gold), var(--sw-gold-dark));
+    color: var(--sw-coffee-900);
+    border: none;
+    font-weight: 700;
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--border-radius-md, 8px);
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(173, 134, 65, 0.4);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sw-btn-gold:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(173, 134, 65, 0.5);
+}
+
+/* ---------- Floating format toolbar ---------- */
+.floating-toolbar {
+    position: absolute;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    background: var(--sw-coffee-900);
+    color: var(--sw-cream-50);
+    padding: 0.35rem 0.5rem;
+    border-radius: 999px;
+    box-shadow: var(--sw-shadow-lg);
+    animation: sw-pop-in 0.12s ease-out;
+}
+
+.floating-toolbar::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    transform: translateX(-50%);
+    border-width: 6px 6px 0 6px;
+    border-style: solid;
+    border-color: var(--sw-coffee-900) transparent transparent transparent;
+}
+
+.floating-toolbar button {
+    background: transparent;
+    border: none;
+    color: var(--sw-cream-50);
+    min-width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.floating-toolbar button:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.floating-toolbar button.is-active {
+    background: var(--sw-gold);
+    color: var(--sw-coffee-900);
+}
+
+.ft-divider {
+    width: 1px;
+    height: 1.1rem;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 0 0.15rem;
+}
+
+@keyframes sw-pop-in {
+    from { opacity: 0; transform: translateY(4px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---------- Body ---------- */
+.sermon-editor {
+    padding: 1rem;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.folder-info {
+    background-color: var(--sw-cream-100);
+    color: var(--sw-coffee-700);
+    padding: 0.6rem 1rem;
+    border-radius: var(--border-radius-lg, 12px);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    width: fit-content;
+    box-shadow: var(--sw-shadow);
+}
+
+.sw-paper {
+    background-color: var(--sw-white);
+    border-radius: var(--border-radius-lg, 14px);
+    padding: 1.75rem 1.5rem;
+    box-shadow: var(--sw-shadow-lg);
+    border: 1px solid var(--sw-coffee-100);
+}
+
+.sw-field {
+    margin-bottom: 1.1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--sw-coffee-100);
+}
+
+.sw-field label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sw-coffee-500);
+    margin-bottom: 0.4rem;
+}
+
+.sw-input,
+.sw-title-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--sw-coffee-900);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1rem;
+    resize: none;
+    overflow: hidden;
+}
+
+.sw-title-input {
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.sw-input::placeholder,
+.sw-title-input::placeholder {
+    color: var(--sw-coffee-300);
+    font-weight: 400;
+}
+
+.sw-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.sw-field-fecha {
+    max-width: 220px;
+}
+
+.sw-textarea-auto {
+    min-height: 1.6em;
+}
+
+.sw-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.5rem 0 1.25rem;
+    color: var(--sw-coffee-500);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.sw-divider::before,
+.sw-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--sw-coffee-300);
+}
+
+.sw-content {
+    min-height: 340px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--sw-coffee-900);
+    outline: none;
+}
+
+.sw-content:focus {
+    outline: none;
+}
+
+.sw-content.is-empty::before {
+    content: attr(data-placeholder);
+    color: var(--sw-coffee-300);
+    pointer-events: none;
+}
+
+.sw-content p { margin: 0 0 1rem; }
+.sw-content h2 {
+    font-size: 1.2rem;
+    color: var(--sw-coffee-800);
+    margin: 1.5rem 0 0.5rem;
+}
+.sw-content ul { margin: 0 0 1rem 1.25rem; }
+.sw-content mark,
+.sw-content [style*="background"] {
+    background-color: #F5D97A;
+    padding: 0 0.15em;
+    border-radius: 3px;
+}
+
+.sw-stats {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    color: var(--sw-coffee-500);
+    font-size: 0.8rem;
+    margin: 0.9rem 0 1.25rem;
+}
+
+.sw-dot { color: var(--sw-coffee-300); }
+
+/* ---------- Action buttons (reusing global btn classes) ---------- */
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+}
+
+.sermon-page .btn-primary {
+    background: linear-gradient(135deg, var(--sw-coffee-700), var(--sw-coffee-900));
+    border: none;
+}
+
+.sermon-page .btn-secondary {
+    background: var(--sw-cream-200);
+    color: var(--sw-coffee-800);
+    border: 1px solid var(--sw-coffee-300);
+}
+
+.action-buttons .btn-primary,
+.action-buttons .btn-secondary {
+    flex: 1;
+    min-width: 140px;
+    justify-content: center;
+}
+
+/* ---------- Modo lectura (Vista previa) ---------- */
+body.reading-mode #autosaveStatus,
+body.reading-mode #floatingToolbar {
+    display: none !important;
+}
+
+.sermon-editor.reading-mode #folderInfoBar,
+.sermon-editor.reading-mode .sw-stats,
+.sermon-editor.reading-mode .sw-field label {
+    display: none;
+}
+
+.sermon-editor.reading-mode .sw-paper {
+    max-width: 680px;
+    margin: 0 auto;
+    box-shadow: none;
+    border: none;
+    padding: 1.5rem 0.25rem;
+}
+
+.sermon-editor.reading-mode .sw-field {
+    border-bottom: none;
+    padding-bottom: 0.35rem;
+    pointer-events: none;
+}
+
+.sermon-editor.reading-mode .sw-field-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.sermon-editor.reading-mode .sw-title-input {
+    text-align: center;
+    font-size: 2rem;
+}
+
+.sermon-editor.reading-mode .sw-row {
+    justify-content: center;
+}
+
+.sermon-editor.reading-mode .sw-content {
+    font-size: 1.2rem;
+    pointer-events: auto; /* permite seleccionar/copiar texto al predicar */
+}
+
+.sermon-editor.reading-mode #previewBtn {
+    background: linear-gradient(135deg, var(--sw-coffee-700), var(--sw-coffee-900));
+    color: var(--sw-white);
+}
+
+/* ---------- Print / "PDF" ---------- */
+@media print {
+    .sw-header,
+    .folder-info,
+    .floating-toolbar,
+    .sw-stats,
+    .action-buttons,
+    #sidebarContainer,
+    #toastContainer {
+        display: none !important;
+    }
+    .sermon-page {
+        background: var(--sw-white);
+    }
+    .sw-paper {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+    }
+    .sw-field {
+        border-bottom: none;
+    }
+}

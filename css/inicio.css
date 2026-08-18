@@ -1,0 +1,769 @@
+/* =========================================================
+   MI BIBLIOTECA — inicio.css
+   Dirección: librería de estudio / manuscrito.
+   Tinta (navy), marfil (paper), vino y latón como acento
+   sobre los lomos de carpeta. Todas las clases/IDs que usa
+   inicio.js se mantienen intactos: solo se redefine la piel.
+   ========================================================= */
+
+/* ---- Tokens de página (sobrescriben, de forma local a esta
+   página, las variables que ya consume el resto del sistema:
+   --primary-color, --bg-primary, --border-color, etc.) ---- */
+:root {
+    --primary-color: #7B2D3F;
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F6F1E6;
+    --text-primary: #251D16;
+    --text-secondary: #6E6255;
+    --border-color: #E6DBC8;
+    --border-radius-lg: 16px;
+    --shadow-sm: 0 1px 3px rgba(37, 29, 22, 0.08);
+    --transition-fast: 180ms ease;
+
+    /* tokens propios de la librería */
+    --ink-900: #1C2735;
+    --ink-800: #253449;
+    --ink-700: #33465F;
+    --paper-50: #FBF7EC;
+    --paper-100: #F3ECDC;
+    --wine-600: #7B2D3F;
+    --wine-700: #5E2130;
+    --brass-400: #D9AE6E;
+    --brass-500: #B8863F;
+    --brass-600: #96692C;
+
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Work Sans', -apple-system, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+    --shadow-card: 0 1px 2px rgba(28, 39, 53, 0.06), 0 8px 20px -8px rgba(28, 39, 53, 0.18);
+    --shadow-lift: 0 4px 10px rgba(28, 39, 53, 0.10), 0 16px 32px -12px rgba(28, 39, 53, 0.28);
+}
+
+body {
+    background-color: var(--paper-50);
+    background-image:
+        radial-gradient(circle at 1px 1px, rgba(28, 39, 53, 0.05) 1px, transparent 0);
+    background-size: 22px 22px;
+    font-family: var(--font-body);
+    color: var(--text-primary);
+}
+
+.main-content {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+/* -------------------- Encabezado -------------------- */
+.header-title h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* -------------------- Hero / bienvenida -------------------- */
+.welcome-message {
+    position: relative;
+    padding: 2.25rem 1.25rem 3rem;
+    background:
+        radial-gradient(ellipse 120% 100% at 20% 0%, var(--ink-700) 0%, var(--ink-900) 62%);
+    color: var(--paper-50);
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.welcome-message::before {
+    /* textura sutil de papel/lino sobre la tinta */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 6px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.welcome-message::after {
+    /* filo dorado inferior, como el canto de un libro */
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--brass-400) 20%, var(--brass-500) 50%, var(--brass-400) 80%, transparent);
+    opacity: 0.85;
+}
+
+.welcome-message h2 {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(1.5rem, 5vw, 1.85rem);
+    letter-spacing: 0.005em;
+}
+
+.welcome-message #userName {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--brass-400);
+}
+
+/* -------------------- Buscador (marcapáginas) -------------------- */
+.search-container {
+    position: relative;
+    z-index: 2;
+    padding: 0 1.25rem;
+    margin-top: -1.65rem;
+}
+
+#searchSermon {
+    width: 100%;
+    padding: 1rem 1.125rem;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    font-family: var(--font-body);
+    font-size: 0.975rem;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    box-shadow: var(--shadow-lift);
+    transition: box-shadow var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+#searchSermon::placeholder {
+    color: var(--text-secondary);
+}
+
+#searchSermon:focus {
+    outline: none;
+    border-color: var(--wine-600);
+    box-shadow: var(--shadow-lift), 0 0 0 3px rgba(123, 45, 63, 0.14);
+}
+
+#searchSermon:hover {
+    transform: translateY(-1px);
+}
+
+/* -------------------- Resultados de búsqueda -------------------- */
+.search-results {
+    padding: 0.5rem 0 1.25rem;
+    margin: 0 1.25rem;
+    animation: fadeSlideIn 220ms ease both;
+}
+
+.search-results h3 {
+    margin: 1rem 0 0.75rem;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.search-results h3 #resultCount {
+    color: var(--wine-600);
+    font-weight: 600;
+}
+
+.result-item {
+    position: relative;
+    padding: 1rem 2.5rem 1rem 1.125rem;
+    margin-bottom: 0.625rem;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--brass-500);
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: var(--shadow-card);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+/* -------------------- Menú de opciones de sermón (⋮) -------------------- */
+.sermon-menu-btn {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.5rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.sermon-menu-btn:hover,
+.sermon-menu-btn[aria-expanded="true"] {
+    background-color: rgba(28, 39, 53, 0.08);
+    color: var(--text-primary);
+}
+
+.sermon-menu {
+    position: absolute;
+    top: 2.3rem;
+    right: 0.5rem;
+    z-index: 5;
+    min-width: 170px;
+    padding: 0.35rem;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: var(--shadow-lift);
+}
+
+.sermon-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: 100%;
+    padding: 0.55rem 0.6rem;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--wine-600);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.sermon-menu-item:hover {
+    background-color: rgba(123, 45, 63, 0.08);
+}
+
+.result-item:last-child {
+    margin-bottom: 0;
+}
+
+.result-item:hover {
+    transform: translateX(3px);
+    box-shadow: var(--shadow-lift);
+    border-left-color: var(--wine-600);
+}
+
+.result-item h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.result-item p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-style: italic;
+}
+
+.result-item small {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--brass-600);
+    letter-spacing: 0.03em;
+}
+
+/* -------------------- Sección de carpetas -------------------- */
+.folders-section {
+    padding-bottom: 1rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 1.75rem 1.25rem 0.5rem;
+}
+
+.section-header h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: var(--text-primary);
+}
+
+.btn-create {
+    padding: 0.5rem 0.9rem;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--wine-600);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn-create:hover {
+    background-color: rgba(123, 45, 63, 0.08);
+    transform: translateY(-1px);
+}
+
+.folders-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.875rem;
+    padding: 0.75rem 1.25rem 0.5rem;
+}
+
+/* Carpetas como lomos de libro sobre un estante */
+.folder-card {
+    position: relative;
+    padding: 1.25rem 1rem 1rem;
+    background: linear-gradient(180deg, var(--bg-primary) 0%, var(--paper-100) 100%);
+    border: 1px solid var(--border-color);
+    border-left: 6px solid var(--brass-500); /* JS sobrescribe el color vía style.borderColor */
+    border-radius: 4px 12px 12px 4px;
+    cursor: pointer;
+    box-shadow: var(--shadow-card);
+    transition: transform 200ms cubic-bezier(.2,.7,.3,1), box-shadow 200ms ease;
+    animation: fadeSlideIn 320ms ease both;
+}
+
+.folders-grid .folder-card:nth-child(1) { animation-delay: 0ms; }
+.folders-grid .folder-card:nth-child(2) { animation-delay: 40ms; }
+.folders-grid .folder-card:nth-child(3) { animation-delay: 80ms; }
+.folders-grid .folder-card:nth-child(4) { animation-delay: 120ms; }
+.folders-grid .folder-card:nth-child(5) { animation-delay: 160ms; }
+.folders-grid .folder-card:nth-child(6) { animation-delay: 200ms; }
+
+.folder-card::after {
+    /* sombra fina al pie, como si el lomo se apoyara en el estante */
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: -6px;
+    height: 6px;
+    background: radial-gradient(ellipse at center, rgba(28, 39, 53, 0.16), transparent 70%);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.folder-card:hover {
+    transform: translateY(-4px) rotate(-0.3deg);
+    box-shadow: var(--shadow-lift);
+}
+
+.folder-card:hover::after {
+    opacity: 1;
+}
+
+.folder-card:active {
+    transform: translateY(-1px) scale(0.99);
+}
+
+.folder-icon {
+    font-size: 1.6rem;
+    margin-bottom: 0.6rem;
+    line-height: 1;
+}
+
+/* -------------------- Menú de opciones de carpeta (⋮) -------------------- */
+.folder-menu-btn {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.folder-menu-btn:hover,
+.folder-menu-btn[aria-expanded="true"] {
+    background-color: rgba(28, 39, 53, 0.08);
+    color: var(--text-primary);
+}
+
+.folder-menu {
+    position: absolute;
+    top: 2.1rem;
+    right: 0.4rem;
+    z-index: 5;
+    min-width: 170px;
+    padding: 0.35rem;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: var(--shadow-lift);
+}
+
+.folder-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: 100%;
+    padding: 0.55rem 0.6rem;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--wine-600);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.folder-menu-item:hover {
+    background-color: rgba(123, 45, 63, 0.08);
+}
+
+/* -------------------- Vista de detalle de carpeta -------------------- */
+.folder-detail {
+    padding: 0.5rem 1.25rem 1rem;
+}
+
+.folder-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0 1rem;
+}
+
+.btn-back {
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.825rem;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.btn-back:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--wine-600);
+}
+
+.folder-detail-header h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+}
+
+.folder-sermons-list .result-item {
+    cursor: pointer;
+}
+
+/* -------------------- Botón de peligro (eliminar) -------------------- */
+.btn-danger {
+    border: none;
+    border-radius: 999px;
+    padding: 0.7rem 1.3rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #C0392B, #922B21);
+    box-shadow: 0 4px 12px -2px rgba(146, 43, 33, 0.45);
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn-danger:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px -4px rgba(146, 43, 33, 0.5);
+}
+
+.folder-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 0.2rem;
+    overflow-wrap: anywhere;
+}
+
+.folder-count {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.03em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.empty-message {
+    grid-column: 1 / -1;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    font-family: var(--font-display);
+    background-color: var(--bg-primary);
+    border: 1px dashed var(--border-color);
+    border-radius: 12px;
+}
+
+/* -------------------- Acción rápida -------------------- */
+.quick-actions {
+    position: sticky;
+    bottom: 0.9rem;
+    display: flex;
+    justify-content: center;
+    padding: 1.25rem 1.25rem 0.25rem;
+    margin-top: 0.5rem;
+    pointer-events: none;
+}
+
+.btn-quick-action {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.95rem 1.75rem;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--wine-600), var(--wine-700));
+    color: var(--paper-50);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    box-shadow: 0 6px 16px -4px rgba(94, 33, 48, 0.55), 0 2px 6px rgba(94, 33, 48, 0.35);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+}
+
+.btn-quick-action::before {
+    content: '+';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.2rem;
+    height: 1.2rem;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: var(--ink-900);
+    background: var(--brass-400);
+    border-radius: 50%;
+}
+
+.btn-quick-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px -4px rgba(94, 33, 48, 0.55), 0 4px 10px rgba(94, 33, 48, 0.4);
+    filter: brightness(1.03);
+}
+
+.btn-quick-action:active {
+    transform: translateY(0);
+}
+
+/* -------------------- Modales (creación de carpeta / selección) -------------------- */
+.modal-content {
+    font-family: var(--font-body);
+    background-color: var(--paper-50);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px -12px rgba(28, 39, 53, 0.4);
+}
+
+.modal-content h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+}
+
+.modal-content > p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background-color: var(--bg-primary);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--wine-600);
+    box-shadow: 0 0 0 3px rgba(123, 45, 63, 0.12);
+}
+
+.color-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.color-option {
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 0 0 2px var(--bg-primary), 0 0 0 3px var(--border-color);
+    cursor: pointer;
+    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.color-option:hover {
+    transform: scale(1.08);
+}
+
+/* nota: el estado "seleccionado" se aplica por JS vía style.border inline;
+   se conserva intacto para no tocar la arquitectura existente */
+
+.folder-select {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 260px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.folder-option {
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.folder-option:hover {
+    background-color: var(--bg-secondary);
+}
+
+.folder-option.selected {
+    border-color: var(--wine-600);
+    background-color: rgba(123, 45, 63, 0.06);
+    color: var(--wine-600);
+    font-weight: 600;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 1.4rem;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 0.7rem 1.3rem;
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+}
+
+.btn-primary {
+    border: none;
+    background: linear-gradient(135deg, var(--wine-600), var(--wine-700));
+    color: var(--paper-50);
+    box-shadow: 0 4px 12px -2px rgba(94, 33, 48, 0.45);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px -4px rgba(94, 33, 48, 0.5);
+}
+
+.btn-secondary {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* -------------------- Animaciones -------------------- */
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+    }
+}
+
+/* -------------------- Responsive -------------------- */
+@media (min-width: 480px) {
+    .folders-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 720px) {
+    .folders-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 360px) {
+    .folders-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.625rem;
+    }
+
+    .welcome-message {
+        padding: 1.75rem 1rem 2.5rem;
+    }
+}

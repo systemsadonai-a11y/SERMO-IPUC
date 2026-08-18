@@ -1,0 +1,485 @@
+/* =========================================================
+   BIBLIA — biblia.css
+   Misma dirección visual que inicio.css: librería de estudio.
+   Se repiten los mismos tokens de página porque biblia.html
+   no carga inicio.css (son páginas independientes).
+   ========================================================= */
+:root {
+    --primary-color: #7B2D3F;
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F6F1E6;
+    --text-primary: #251D16;
+    --text-secondary: #6E6255;
+    --border-color: #E6DBC8;
+    --border-radius-lg: 16px;
+    --shadow-sm: 0 1px 3px rgba(37, 29, 22, 0.08);
+    --transition-fast: 180ms ease;
+
+    --ink-900: #1C2735;
+    --ink-800: #253449;
+    --ink-700: #33465F;
+    --paper-50: #FBF7EC;
+    --paper-100: #F3ECDC;
+    --wine-600: #7B2D3F;
+    --wine-700: #5E2130;
+    --brass-400: #D9AE6E;
+    --brass-500: #B8863F;
+    --brass-600: #96692C;
+
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Work Sans', -apple-system, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+    --shadow-card: 0 1px 2px rgba(28, 39, 53, 0.06), 0 8px 20px -8px rgba(28, 39, 53, 0.18);
+    --shadow-lift: 0 4px 10px rgba(28, 39, 53, 0.10), 0 16px 32px -12px rgba(28, 39, 53, 0.28);
+}
+
+body {
+    background-color: var(--paper-50);
+    background-image: radial-gradient(circle at 1px 1px, rgba(28, 39, 53, 0.05) 1px, transparent 0);
+    background-size: 22px 22px;
+    font-family: var(--font-body);
+    color: var(--text-primary);
+}
+
+.main-content {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.header-title h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.bible-app {
+    padding-bottom: 1rem;
+}
+
+/* -------------------- Buscador -------------------- */
+.bible-search {
+    padding: 1.25rem 1.25rem 0.75rem;
+}
+
+#searchBiblia {
+    width: 100%;
+    padding: 1rem 1.125rem;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    font-family: var(--font-body);
+    font-size: 0.975rem;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+#searchBiblia::placeholder {
+    color: var(--text-secondary);
+}
+
+#searchBiblia:focus {
+    outline: none;
+    border-color: var(--wine-600);
+    box-shadow: var(--shadow-lift), 0 0 0 3px rgba(123, 45, 63, 0.14);
+}
+
+/* -------------------- Pestañas de Testamento -------------------- */
+.testament-tabs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.25rem 1.25rem 1rem;
+}
+
+.testament-tab {
+    flex: 1;
+    padding: 0.8rem 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.testament-tab:hover {
+    border-color: var(--wine-600);
+}
+
+.testament-tab.active {
+    background: linear-gradient(135deg, var(--ink-700), var(--ink-900));
+    border-color: var(--ink-900);
+    color: var(--brass-400);
+    box-shadow: var(--shadow-card);
+}
+
+/* -------------------- Cuadrícula de libros -------------------- */
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    padding: 0 1.25rem 1rem;
+}
+
+.book-card {
+    position: relative;
+    padding: 1.1rem 1rem;
+    background: linear-gradient(180deg, var(--bg-primary) 0%, var(--paper-100) 100%);
+    border: 1px solid var(--border-color);
+    border-left: 5px solid var(--brass-500);
+    border-radius: 4px 12px 12px 4px;
+    cursor: pointer;
+    box-shadow: var(--shadow-card);
+    transition: transform 180ms cubic-bezier(.2,.7,.3,1), box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.book-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+    border-left-color: var(--wine-600);
+}
+
+.book-card:active {
+    transform: translateY(-1px) scale(0.99);
+}
+
+.book-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+}
+
+.book-chapters {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+@media (min-width: 480px) {
+    .books-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 720px) {
+    .books-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* -------------------- Encabezado de vista (Capítulos / Lectura / Resultados) -------------------- */
+.view-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1.25rem 1rem;
+}
+
+.btn-back {
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.825rem;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.btn-back:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--wine-600);
+}
+
+.view-header h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    overflow-wrap: anywhere;
+}
+
+/* -------------------- Cuadrícula de capítulos -------------------- */
+.chapters-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.6rem;
+    padding: 0 1.25rem 1rem;
+}
+
+.chapter-chip {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.chapter-chip:hover {
+    border-color: var(--wine-600);
+    color: var(--wine-600);
+    transform: translateY(-2px);
+}
+
+.chapter-chip:active {
+    transform: translateY(0);
+    background: linear-gradient(135deg, var(--wine-600), var(--wine-700));
+    color: var(--paper-50);
+}
+
+@media (min-width: 480px) {
+    .chapters-grid {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}
+
+@media (min-width: 720px) {
+    .chapters-grid {
+        grid-template-columns: repeat(9, 1fr);
+    }
+}
+
+/* -------------------- Selección de versículo -------------------- */
+.verses-select-actions {
+    padding: 0 1.25rem 0.75rem;
+}
+
+.btn-read-all {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px dashed var(--border-color);
+    border-radius: 10px;
+    background-color: var(--bg-primary);
+    color: var(--wine-600);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.btn-read-all:hover {
+    background-color: var(--bg-secondary);
+    border-color: var(--wine-600);
+}
+
+.verses-select-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.6rem;
+    padding: 0 1.25rem 1rem;
+}
+
+.verse-chip {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.verse-chip:hover {
+    border-color: var(--brass-500);
+    color: var(--wine-600);
+    transform: translateY(-2px);
+}
+
+.verse-chip:active {
+    transform: translateY(0);
+    background: linear-gradient(135deg, var(--wine-600), var(--wine-700));
+    color: var(--paper-50);
+}
+
+@media (min-width: 480px) {
+    .verses-select-grid {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}
+
+@media (min-width: 720px) {
+    .verses-select-grid {
+        grid-template-columns: repeat(9, 1fr);
+    }
+}
+
+/* -------------------- Vista de lectura -------------------- */
+.verses-container {
+    padding: 0.25rem 1.25rem 1rem;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--wine-600);
+    margin: 1.5rem 0 0.75rem;
+}
+
+.section-title:first-child {
+    margin-top: 0.25rem;
+}
+
+.versiculo-item {
+    display: flex;
+    gap: 0.6rem;
+    padding: 0.35rem 0;
+}
+
+.versiculo-numero {
+    flex-shrink: 0;
+    min-width: 1.5rem;
+    padding-top: 0.15rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: var(--brass-600);
+    text-align: right;
+}
+
+.versiculo-texto {
+    flex: 1;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--text-primary);
+}
+
+/* -------------------- Navegación de capítulo -------------------- */
+.chapter-navigation {
+    position: sticky;
+    bottom: 0.9rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 1.25rem 0;
+    padding: 0.6rem 0.75rem;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    box-shadow: var(--shadow-lift);
+}
+
+.chapter-navigation button {
+    padding: 0.55rem 1rem;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--wine-600);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), opacity var(--transition-fast);
+}
+
+.chapter-navigation button:hover:not(:disabled) {
+    background-color: rgba(123, 45, 63, 0.08);
+}
+
+.chapter-navigation button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+#currentChapter {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* -------------------- Resultados de búsqueda -------------------- */
+.search-result-item {
+    display: block;
+    padding: 1rem 1.125rem;
+    margin-bottom: 0.625rem;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--brass-500);
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: var(--shadow-card);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.search-result-item:hover {
+    transform: translateX(3px);
+    box-shadow: var(--shadow-lift);
+    border-left-color: var(--wine-600);
+}
+
+.search-result-ref {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--wine-600);
+    margin-bottom: 0.3rem;
+}
+
+.search-result-texto {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.empty-message {
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    font-family: var(--font-display);
+    background-color: var(--bg-primary);
+    border: 1px dashed var(--border-color);
+    border-radius: 12px;
+    margin: 0 1.25rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition-duration: 0.001ms !important;
+    }
+}
+/* -------------------- Versículo resaltado (llegada directa) -------------------- */
+.versiculo-destacado {
+    background-color: rgba(184, 134, 63, 0.16);
+    border-radius: 8px;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+    margin: 0 -0.4rem;
+    animation: destacarVersiculo 2.2s ease;
+}
+
+@keyframes destacarVersiculo {
+    0%   { background-color: rgba(184, 134, 63, 0.4); }
+    100% { background-color: rgba(184, 134, 63, 0.16); }
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Sermón</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/sermon.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4E342E">
+</head>
+<body class="sermon-page">
+    <!-- Sidebar -->
+    <div id="sidebarContainer"></div>
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header sw-header">
+            <div class="sw-header-left">
+                <button id="backBtn" class="sw-icon-btn" aria-label="Volver">←</button>
+                <div class="sw-brand">
+                    <span class="sw-brand-icon">✝</span>
+                    <span class="sw-brand-name">SermonWriter</span>
+                </div>
+                <span id="autosaveStatus" class="sw-autosave">Guardado</span>
+            </div>
+            <div class="sw-header-right">
+                <button id="pdfBtn" class="sw-btn-gold">⬇ PDF</button>
+                <button id="printBtn" class="sw-icon-btn" aria-label="Imprimir">🖨</button>
+            </div>
+        </header>
+
+        <!-- Barra flotante de formato (aparece solo al seleccionar texto) -->
+        <div id="floatingToolbar" class="floating-toolbar" hidden>
+            <button type="button" data-cmd="bold" title="Negrilla"><strong>N</strong></button>
+            <button type="button" data-cmd="italic" title="Cursiva"><em>K</em></button>
+            <button type="button" data-cmd="underline" title="Subrayado"><u>S</u></button>
+            <span class="ft-divider"></span>
+            <button type="button" data-action="inc" title="Aumentar tamaño">A+</button>
+            <button type="button" data-action="dec" title="Disminuir tamaño">A−</button>
+            <span class="ft-divider"></span>
+            <button type="button" data-cmd="hilite" title="Resaltar">🖍</button>
+            <button type="button" data-action="clear" title="Quitar formato">✕</button>
+        </div>
+
+        <!-- Sermon Editor -->
+        <div class="sermon-editor">
+            <!-- Folder Info -->
+            <div class="folder-info" id="folderInfoBar">
+                <span>📁</span>
+                <span id="selectedFolder">Sin carpeta</span>
+            </div>
+
+            <div class="sw-paper">
+                <div class="sw-field sw-field-title">
+                    <label for="titulo">Título del sermón</label>
+                    <input type="text" id="titulo" class="sw-title-input" placeholder="Título del sermón">
+                </div>
+
+                <div class="sw-field">
+                    <label for="tema">Lema</label>
+                    <input type="text" id="tema" class="sw-input" placeholder="Lema de la predicación...">
+                </div>
+
+                <div class="sw-row">
+                    <div class="sw-field sw-field-fecha">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" id="fecha" class="sw-input">
+                    </div>
+                </div>
+
+                <div class="sw-field">
+                    <label for="textoBiblico">Texto bíblico principal</label>
+                    <textarea id="textoBiblico" class="sw-input sw-textarea-auto" rows="1" placeholder="Ej: Juan 3:16 — Porque de tal manera amó Dios al mundo..."></textarea>
+                </div>
+
+                <div class="sw-divider"><span>Contenido del sermón</span></div>
+
+                <div id="contenido" class="sw-content" contenteditable="true" data-placeholder="Comienza a escribir tu sermón aquí..."></div>
+            </div>
+
+            <div class="sw-stats">
+                <span>Palabras: <strong id="statWords">0</strong></span>
+                <span class="sw-dot">·</span>
+                <span>Caracteres: <strong id="statChars">0</strong></span>
+                <span class="sw-dot">·</span>
+                <span>Lectura: <strong id="statTime">0</strong> min</span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button id="previewBtn" class="btn-primary">👁 Vista previa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Container -->
+    <div id="modalContainer"></div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <script src="js/app.js"></script>
+    <script src="js/database.js"></script>
+    <script src="components/sidebar.js"></script>
+    <script src="components/modal.js"></script>
+    <script src="components/toast.js"></script>
+    <script src="js/sermon.js"></script>
+</body>
+</html>
