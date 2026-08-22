@@ -1,12 +1,48 @@
 // sermon.js - Lógica del editor de sermones (estilo blog, tema café/blanco)
 // Guardado 100% automático en Database. Sin botón "Guardar".
+//
+// NOTA SOBRE ROBUSTEZ (leer antes de tocar):
+// En Android, cuando la app pasa a segundo plano, el sistema puede destruir
+// el WebView y recrearlo al volver. Eso borra las variables JS (currentSermonId
+// incluido) aunque el sermón ya se hubiera guardado en la base de datos.
+// Para evitar duplicados y pérdidas de información, esta versión guarda una
+// "sesión activa" (id + fechaCreacion) en localStorage bajo SESSION_KEY.
+// Si al abrir el editor encontramos una sesión activa, la recuperamos ANTES
+// de crear un sermón nuevo.
+//
+// IMPORTANTE: si en tu pantalla de listado (inicio.html) tienes un botón
+// "Nuevo sermón" que navega a sermon.html, agrega ANTES de navegar:
+//     localStorage.removeItem('sermonActiveSession');
+// Si no lo haces, y el usuario cerró la app a la mitad de una edición sin
+// usar el botón "atrás" del editor, el próximo "Nuevo sermón" podría
+// reabrir por error esa sesión antigua en vez de empezar en blanco.
 
 let autosaveTimer = null;
 let currentSermonId = null;
 let currentFechaCreacion = null;
 let isReadingMode = false;
+let saveInProgress = false;
+let saveQueued = false;
+
+const SESSION_KEY = 'sermonActiveSession';
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // CRÍTICO: indexedDB.open() es asíncrono. Database.ready es la promesa
+    // que se resuelve cuando la base de datos terminó de abrirse. Si no la
+    // esperamos aquí, cualquier lectura/escritura que ocurra antes (por
+    // ejemplo, el usuario escribiendo apenas abre la pantalla) lanza
+    // "La base de datos no está inicializada". En el navegador de escritorio
+    // casi no se nota porque IndexedDB abre en milisegundos, pero en un APK
+    // recién instalado, con arranque en frío, es mucho más lento — y esta
+    // es la causa más probable de guardados que fallan en silencio.
+    try {
+        await Database.ready;
+    } catch (error) {
+        console.error('No se pudo inicializar la base de datos:', error);
+        Toast.show('No se pudo iniciar la base de datos. Cierra y vuelve a abrir la app.', 'error');
+        return;
+    }
+
     const fechaInput = document.getElementById('fecha');
     if (fechaInput && !fechaInput.value) {
         fechaInput.value = new Date().toISOString().slice(0, 10);
@@ -25,11 +61,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Verificar si hay un sermón para editar
+    // Verificar si hay un sermón para editar (navegación explícita desde el listado)
     const sermonToEdit = localStorage.getItem('sermonToEdit');
     if (sermonToEdit) {
+        clearActiveSession();
         await loadSermonForEdit(sermonToEdit);
         localStorage.removeItem('sermonToEdit');
+    } else {
+        // No venimos de "editar sermón" explícitamente. Revisamos si había
+        // una sesión de edición/creación activa que quedó interrumpida
+        // (la app fue cerrada o el WebView fue recreado por el sistema).
+        const activeSession = getActiveSession();
+        if (activeSession && activeSession.id) {
+            await loadSermonForEdit(activeSession.id, true);
+        }
     }
 
     setupAutoGrowTextarea(document.getElementById('textoBiblico'));
@@ -37,9 +82,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateStats();
     setupFloatingToolbar();
     setupAutosaveListeners();
+    setupLifecycleFlush();
 
     document.getElementById('backBtn').addEventListener('click', async () => {
         await flushAutosave();
+        clearActiveSession();
         window.location.href = 'inicio.html';
     });
 
@@ -75,6 +122,30 @@ function setupContentPlaceholder() {
     toggle();
 }
 
+// ---------- Sesión activa (localStorage) ----------
+// Sobrevive a que Android destruya y recree el WebView, para no perder
+// el vínculo con el sermón que se está editando/creando.
+function setActiveSession(session) {
+    try {
+        localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    } catch (e) {
+        console.error('No se pudo guardar la sesión activa:', e);
+    }
+}
+
+function getActiveSession() {
+    try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function clearActiveSession() {
+    localStorage.removeItem(SESSION_KEY);
+}
+
 // ---------- Estadísticas ----------
 function updateStats() {
     const content = document.getElementById('contenido');
@@ -100,6 +171,21 @@ function setupAutosaveListeners() {
     content.addEventListener('input', () => {
         updateStats();
         scheduleAutosave();
+    });
+}
+
+// Guarda de inmediato cuando la app se oculta o va a segundo plano.
+// En móvil, esto es MUCHO más confiable que esperar el debounce o que
+// el usuario use el botón "atrás" dentro del editor: el sistema operativo
+// puede matar el proceso en cualquier momento sin avisar.
+function setupLifecycleFlush() {
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+            flushAutosave();
+        }
+    });
+    window.addEventListener('pagehide', () => {
+        flushAutosave();
     });
 }
 
@@ -139,10 +225,19 @@ function scheduleAutosave() {
     status.classList.add('is-saving');
 
     clearTimeout(autosaveTimer);
-    autosaveTimer = setTimeout(performAutosave, 800);
+    autosaveTimer = setTimeout(performAutosave, 500);
 }
 
+// performAutosave está protegido contra ejecuciones concurrentes:
+// si llega una nueva solicitud de guardado mientras otra está en curso,
+// se marca "saveQueued" y se relanza al terminar, en vez de disparar
+// un segundo Database.createSermon() en paralelo (causa típica de duplicados).
 async function performAutosave() {
+    if (saveInProgress) {
+        saveQueued = true;
+        return;
+    }
+
     const status = document.getElementById('autosaveStatus');
     const data = collectSermonData();
 
@@ -152,6 +247,8 @@ async function performAutosave() {
         status.classList.remove('is-saving');
         return;
     }
+
+    saveInProgress = true;
 
     try {
         const folderId = App.getSelectedFolder();
@@ -163,9 +260,10 @@ async function performAutosave() {
             await Database.createSermon(sermon);
             currentSermonId = sermon.id;
             currentFechaCreacion = sermon.fechaCreacion;
-            localStorage.setItem('sermonEditingId', currentSermonId);
-            localStorage.setItem('sermonFechaCreacion', currentFechaCreacion);
         }
+
+        // Solo después de que la escritura fue exitosa persistimos la sesión.
+        setActiveSession({ id: currentSermonId, fechaCreacion: currentFechaCreacion });
 
         status.textContent = 'Guardado';
         status.classList.remove('is-saving');
@@ -174,6 +272,12 @@ async function performAutosave() {
         status.textContent = 'Error al guardar';
         status.classList.remove('is-saving');
         Toast.show('No se pudo guardar automáticamente', 'error');
+    } finally {
+        saveInProgress = false;
+        if (saveQueued) {
+            saveQueued = false;
+            performAutosave();
+        }
     }
 }
 
@@ -331,7 +435,9 @@ function buildLegacyContentHTML(sermon) {
     return html;
 }
 
-async function loadSermonForEdit(sermonId) {
+// silent = true cuando se recupera automáticamente una sesión activa
+// tras reabrir la app (no fue una acción explícita del usuario).
+async function loadSermonForEdit(sermonId, silent = false) {
     try {
         const sermon = await Database.getSermon(sermonId);
         if (sermon) {
@@ -350,17 +456,24 @@ async function loadSermonForEdit(sermonId) {
             // A partir de aquí, cualquier cambio actualiza este mismo sermón (no crea uno nuevo)
             currentSermonId = sermon.id;
             currentFechaCreacion = sermon.fechaCreacion;
-            localStorage.setItem('sermonEditingId', currentSermonId);
-            localStorage.setItem('sermonFechaCreacion', currentFechaCreacion);
+            setActiveSession({ id: currentSermonId, fechaCreacion: currentFechaCreacion });
 
             setupAutoGrowTextarea(document.getElementById('textoBiblico'));
             setupContentPlaceholder();
             updateStats();
 
-            Toast.show('Sermón cargado para edición', 'info');
+            if (!silent) {
+                Toast.show('Sermón cargado para edición', 'info');
+            }
+        } else if (silent) {
+            // La sesión activa apuntaba a un sermón que ya no existe
+            // (por ejemplo, fue borrado desde el listado). Limpiamos
+            // para no quedar en un estado inconsistente.
+            clearActiveSession();
         }
     } catch (error) {
         console.error('Error al cargar sermón:', error);
+        if (silent) clearActiveSession();
     }
 }
 
