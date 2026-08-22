@@ -411,6 +411,14 @@ function selectFolderAndContinue() {
     }
     
     App.setSelectedFolder(window.selectedFolderId);
+
+    // Importante: este es un sermón NUEVO. Si había quedado una sesión de
+    // edición/creación interrumpida (la app se cerró de golpe sin pasar por
+    // el botón "atrás" del editor), hay que descartarla aquí; si no,
+    // sermon.html podría reabrir por error ese sermón viejo en vez de
+    // empezar uno en blanco.
+    localStorage.removeItem('sermonActiveSession');
+
     Modal.close();
     window.location.href = 'sermon.html';
 }
